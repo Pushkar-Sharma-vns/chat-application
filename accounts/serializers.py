@@ -23,7 +23,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name', 'email', 'name', 'password', 'token']
+        fields = ['name', 'email', 'password', 'token']
 
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
@@ -54,7 +54,6 @@ class LoginSerializer(serializers.Serializer):
         return data
     
 class UserSerializer(serializers.ModelSerializer):
-    """Handles serialization and deserialization of User objects."""
     password = serializers.CharField(
         max_length=128,
         min_length=8,
@@ -63,18 +62,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'token',)
+        fields = ['name', 'email', 'password', 'token']
         read_only_fields = ('token',)
 
-
-    # def update(self, instance, validated_data):
-    #     password = validated_data.pop('password', None)
-
-    #     for (key, value) in validated_data.items():
-    #         setattr(instance, key, value)
-
-    #     if password is not None:
-    #         instance.set_password(password)
-
-    #     instance.save()
-    #     return instance

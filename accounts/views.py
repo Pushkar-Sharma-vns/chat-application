@@ -22,6 +22,7 @@ class LoginView(views.APIView):
     serializer_class = LoginSerializer
     
     def post(self, request):
+        # import ipdb; ipdb.set_trace()
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
@@ -33,8 +34,7 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     
     def retrieve(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.data)
+        serializer = self.serializer_class(request.user)
         return response.Response(serializer.data, status=200)
-    
-    # def update(self, request, *args, **kwargs):
+
         

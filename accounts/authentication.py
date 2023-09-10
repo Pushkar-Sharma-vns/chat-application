@@ -5,6 +5,7 @@ from django.conf import settings
 from rest_framework import authentication, exceptions
 
 from .models import User
+from chat_application.settings import SECRET_KEY
 
 
 class JWTAuthentication(authentication.BaseAuthentication):
@@ -31,6 +32,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
                             exception and let Django REST Framework
                             handle the rest.
         """
+        # import ipdb; ipdb.set_trace()
         request.user = None
 
         auth_header = authentication.get_authorization_header(request).split()
@@ -59,19 +61,15 @@ class JWTAuthentication(authentication.BaseAuthentication):
         successful, return the user and token. If not, throw an error.
         """
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            payload = jwt.decode(token, SECRET_KEY, algorithms='HS256')
         except:
             msg = 'Invalid authentication. Could not decode token.'
             raise exceptions.AuthenticationFailed(msg)
 
         try:
-            user = User.objects.get(pk=payload['id'])
+            user = User.objects.get(id=payload['id'])
         except User.DoesNotExist:
             msg = 'No user matching this token was found.'
-            raise exceptions.AuthenticationFailed(msg)
-
-        if not user.is_active:
-            msg = 'This user has been deactivated.'
             raise exceptions.AuthenticationFailed(msg)
 
         return (user, token)
